@@ -840,39 +840,76 @@ input[aria-invalid="true"] {
 }
 
 /* ---------- Garden tab ---------- */
-.plots {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin: 0;
+.garden-card {
   padding: 0;
-  list-style: none;
+  overflow: hidden;
 }
 
-.plot {
+.garden-scene {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-bottom: var(--line);
+}
+
+.garden-plant {
+  cursor: pointer;
+}
+
+.garden-plant:focus {
+  outline: none;
+}
+
+.select-ring {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 3;
+}
+
+.garden-plant.is-selected .select-ring {
+  stroke: var(--yellow);
+}
+
+.garden-plant:focus-visible .select-ring {
+  stroke: var(--orange);
+  stroke-dasharray: 4 3;
+}
+
+.sway {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: sway 3.2s ease-in-out infinite alternate;
+}
+
+@keyframes sway {
+  from { transform: rotate(-3deg); }
+  to   { transform: rotate(3deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sway { animation: none; }
+}
+
+.garden-hint {
+  padding: 12px 16px;
+}
+
+.plant-detail {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+}
+
+.plant-detail > div {
   display: grid;
-  justify-items: center;
-  gap: 2px;
-  padding: 8px 4px;
-  text-align: center;
-  background: var(--cream);
-  border: 2px dashed var(--ink);
-  border-radius: 18px;
+  gap: 4px;
+  flex: 1;
 }
 
-.plot.is-bloomed {
-  background: var(--yellow-soft);
-  border-style: solid;
-}
-
-.plot b {
-  font-size: 0.9rem;
-}
-
-.plot-note {
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--muted);
+.plant-detail .mini-bar {
+  width: 100%;
 }
 
 .mini-bar {

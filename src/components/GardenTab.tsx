@@ -2,6 +2,7 @@ import { useState } from "react";
 import { FLOWERS, GARDEN_SIZE, findFlower, growthPercent, isBloomed, type Plot } from "../lib/garden";
 import { CoinIcon } from "./Icons";
 import { FlowerArt } from "./FlowerArt";
+import { GardenScene } from "./GardenScene";
 
 interface Props {
   coins: number;
@@ -11,7 +12,11 @@ interface Props {
 }
 
 export function GardenTab({ coins, garden, onBuy, onDigUp }: Props) {
-  const [confirming, setConfirming] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [confirming, setConfirming] = useState(false);
+  const selected = garden.find((p) => p.id === selectedId) ?? null;
+  const selectedFlower = selected ? findFlower(selected.flowerId) : undefined;
+  const selectedPercent = selected ? growthPercent(selected) : 0;
   const bloomed = garden.filter(isBloomed).length;
   const full = garden.length >= GARDEN_SIZE;
 
@@ -38,45 +43,38 @@ export function GardenTab({ coins, garden, onBuy, onDigUp }: Props) {
         </div>
       </div>
 
-      <section className="card">
-        <h3 className="card-title">Garden</h3>
+      <section className="card garden-card">
+        <GardenScene garden={garden} selected={selected?.id ?? null} onSelect={(id) => { setSelectedId(id); setConfirming(false); }} />
         {garden.length === 0 ? (
-          <p className="muted">Your garden is empty. Buy a flower from the shop below to plant it.</p>
+          <p className="muted garden-hint">Your garden is empty. Buy a flower from the shop below to plant it.</p>
+        ) : !selected || !selectedFlower ? (
+          <p className="muted garden-hint">Tap a plant to see how it is doing.</p>
         ) : (
-          <ul className="plots">
-            {garden.map((plot) => {
-              const flower = findFlower(plot.flowerId);
-              if (!flower) return null;
-              const percent = growthPercent(plot);
-              const left = flower.growMinutes - plot.growth;
-              return (
-                <li key={plot.id} className={`plot${percent >= 100 ? " is-bloomed" : ""}`}>
-                  <FlowerArt flower={flower} percent={percent} />
-                  <b>{flower.name}</b>
-                  {percent >= 100 ? (
-                    <span className="plot-note">in bloom</span>
-                  ) : (
-                    <>
-                      <div className="mini-bar" aria-hidden="true"><div style={{ width: `${percent}%` }} /></div>
-                      <span className="plot-note">{left} min of focus left</span>
-                    </>
-                  )}
-                  {confirming === plot.id ? (
-                    <span className="plot-actions">
-                      <button type="button" className="link-btn danger" onClick={() => { onDigUp(plot.id); setConfirming(null); }}>
-                        Dig up
-                      </button>
-                      <button type="button" className="link-btn" onClick={() => setConfirming(null)}>Keep</button>
-                    </span>
-                  ) : (
-                    <button type="button" className="link-btn" onClick={() => setConfirming(plot.id)} aria-label={`Dig up ${flower.name}`}>
-                      dig up
-                    </button>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
+          <div className="plant-detail">
+            <div>
+              <b>{selectedFlower.name}</b>
+              {selectedPercent >= 100 ? (
+                <p className="muted">In bloom after {selectedFlower.growMinutes} min of focus.</p>
+              ) : (
+                <>
+                  <div className="mini-bar" aria-hidden="true"><div style={{ width: `${selectedPercent}%` }} /></div>
+                  <p className="muted">
+                    {selected.growth} of {selectedFlower.growMinutes} min · {selectedFlower.growMinutes - selected.growth} min of focus left
+                  </p>
+                </>
+              )}
+            </div>
+            {confirming ? (
+              <span className="plot-actions">
+                <button type="button" className="link-btn danger" onClick={() => { onDigUp(selected.id); setSelectedId(null); setConfirming(false); }}>
+                  Dig up
+                </button>
+                <button type="button" className="link-btn" onClick={() => setConfirming(false)}>Keep</button>
+              </span>
+            ) : (
+              <button type="button" className="link-btn" onClick={() => setConfirming(true)}>dig up</button>
+            )}
+          </div>
         )}
       </section>
 
