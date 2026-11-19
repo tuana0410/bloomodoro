@@ -1,10 +1,11 @@
 import type { ComponentType } from "react";
-import { ChartIcon, SlidersIcon, TimerIcon } from "./Icons";
+import { ChartIcon, FlowerIcon, SlidersIcon, TimerIcon } from "./Icons";
 
-export type Tab = "focus" | "progress" | "settings";
+export type Tab = "focus" | "garden" | "progress" | "settings";
 
 const TABS: { id: Tab; label: string; Icon: ComponentType }[] = [
   { id: "focus", label: "Focus", Icon: TimerIcon },
+  { id: "garden", label: "Garden", Icon: FlowerIcon },
   { id: "progress", label: "Progress", Icon: ChartIcon },
   { id: "settings", label: "Settings", Icon: SlidersIcon },
 ];

@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { BottomNav, type Tab } from "./components/BottomNav";
 import { FocusTab } from "./components/FocusTab";
-import { FlameIcon, StarIcon } from "./components/Icons";
+import { GardenTab } from "./components/GardenTab";
+import { CoinIcon, FlameIcon, StarIcon } from "./components/Icons";
 import { ProgressTab } from "./components/ProgressTab";
 import { SettingsTab } from "./components/SettingsTab";
 import { useNow } from "./hooks/useNow";
 import { playChime } from "./lib/chime";
 import { formatClock } from "./lib/format";
+import { buyFlower, digUp, findFlower } from "./lib/garden";
 import {
   INITIAL_STATE,
   STAGES,
@@ -58,11 +60,13 @@ export default function App() {
     if (settings.sound) playChime();
 
     const stageName = STAGES[stageProgress(result.state.xp).index].name;
+    const bloomed = result.bloomed.map((f) => f.name.toLowerCase());
     setNotice({
       kind: "success",
-      text: result.grew
-        ? `Session done: +${result.gained} XP. Your plant grew into a ${stageName.toLowerCase()}!`
-        : `Session done: +${result.gained} XP.`,
+      text:
+        `Session done: +${result.gained} XP and +${result.gained} coins.` +
+        (result.grew ? ` Your plant grew into a ${stageName.toLowerCase()}!` : "") +
+        (bloomed.length ? ` Now in bloom: ${[...new Set(bloomed)].join(", ")}.` : ""),
     });
   }, [now, active, game, settings.sound]);
 
@@ -83,6 +87,20 @@ export default function App() {
     setGame(abandonSession(game, active, Date.now()));
     setActive(null);
     setNotice({ kind: "warn", text: "Session stopped and your plant is sad. Finish the next one to cheer it up." });
+  }
+
+  function handleBuy(flowerId: string) {
+    const result = buyFlower(game.coins, game.garden, flowerId, Date.now());
+    if (!result.ok) {
+      setNotice({ kind: "warn", text: result.error });
+      return;
+    }
+    setGame({ ...game, coins: result.coins, garden: result.garden });
+    setNotice({ kind: "success", text: `${findFlower(flowerId)?.name} planted. Focus to help it grow!` });
+  }
+
+  function handleDigUp(plotId: string) {
+    setGame({ ...game, garden: digUp(game.garden, plotId) });
   }
 
   function handleReset() {
@@ -107,6 +125,9 @@ export default function App() {
           <div className="badges">
             <span className="badge" title="Day streak">
               <FlameIcon /> {visibleStreak(game, now)}
+            </span>
+            <span className="badge" title="Coins">
+              <CoinIcon /> {game.coins}
             </span>
             <span className="badge" title="Total XP">
               <StarIcon /> {game.xp} XP
@@ -133,6 +154,9 @@ export default function App() {
               onStart={handleStart}
               onGiveUp={handleGiveUp}
             />
+          )}
+          {tab === "garden" && (
+            <GardenTab coins={game.coins} garden={game.garden} onBuy={handleBuy} onDigUp={handleDigUp} />
           )}
           {tab === "progress" && <ProgressTab game={game} now={now} />}
           {tab === "settings" && <SettingsTab settings={settings} onChange={setSettings} onReset={handleReset} />}

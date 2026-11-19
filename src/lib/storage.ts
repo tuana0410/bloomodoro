@@ -9,6 +9,7 @@ import {
   type GameState,
   type Session,
 } from "./game";
+import { GARDEN_SIZE, findFlower, type Plot } from "./garden";
 
 const STATE_KEY = "focusflow:v1";
 const ACTIVE_KEY = "focusflow:active:v1";
@@ -34,6 +35,17 @@ function isSession(v: unknown): v is Session {
     (s.result === "completed" || s.result === "abandoned") &&
     isNumber(s.xp) &&
     isNumber(s.endedAt)
+  );
+}
+
+function isPlot(v: unknown): v is Plot {
+  const p = v as Plot;
+  return (
+    typeof p === "object" && p !== null &&
+    typeof p.id === "string" &&
+    typeof p.flowerId === "string" && findFlower(p.flowerId) !== undefined &&
+    isNumber(p.growth) && p.growth >= 0 &&
+    isNumber(p.plantedAt)
   );
 }
 
@@ -77,6 +89,8 @@ export function loadState(): GameState {
     lastDay: typeof data.lastDay === "string" ? data.lastDay : null,
     daily: readDaily(data.daily),
     sessions: Array.isArray(data.sessions) ? data.sessions.filter(isSession) : [],
+    coins: isNumber(data.coins) && data.coins >= 0 ? Math.floor(data.coins) : 0,
+    garden: Array.isArray(data.garden) ? data.garden.filter(isPlot).slice(0, GARDEN_SIZE) : [],
   };
 }
 

@@ -22,6 +22,12 @@ A plain timer makes it easy to put off a study session or stop it early. FocusFl
 - **Giving up** gives no XP, resets the combo and makes the plant sad until you finish the next session.
 - A row of leaves shows how many sessions you finished today against your daily goal.
 
+**Garden**
+- Every finished session also pays **coins**, the same amount as the XP you earned.
+- Spend coins in the flower shop: six flowers, from a daisy (20 coins, blooms after 25 min of focus) to a lotus (200 coins, 240 min).
+- Flowers only grow while you focus. Each finished session adds its minutes to every flower that hasn't bloomed yet.
+- The garden has 9 pots; dig up a flower to make room for a new one.
+
 **Progress**
 - Total focused minutes, current streak and best streak
 - Minutes per day for the last 7 days
@@ -48,6 +54,8 @@ The timer stores the end time instead of counting seconds, so it stays correct w
 src/
   lib/game.ts             game rules: XP, combo, streak, stages, input checks
   lib/game.test.ts        tests for the rules
+  lib/garden.ts           flower shop and garden rules: buying, growing, blooming
+  lib/garden.test.ts      tests for the garden
   lib/storage.ts          save/load with checks for broken data
   hooks/useNow.ts         clock that ticks while a session runs
   components/
@@ -55,6 +63,8 @@ src/
     PlantMascot.tsx       the plant drawing for each stage
     SessionSetup.tsx      form to start a session
     Timer.tsx             running session with progress arc
+    GardenTab.tsx         coins, garden pots and flower shop
+    FlowerArt.tsx         a flower that sprouts, grows and blooms
     ProgressTab.tsx       stats, weekly chart, activity map
     SettingsTab.tsx       name, goal, sound, reset
     BottomNav.tsx         tab bar
@@ -74,6 +84,6 @@ npm run build   # production build in dist/
 
 - Notification when a session ends while the tab is closed
 - Short and long breaks between sessions
-- More plant types to unlock
+- Accounts, so the garden follows you to another device
 
 Made by [Tuana Metdar](https://tuana0410.github.io).

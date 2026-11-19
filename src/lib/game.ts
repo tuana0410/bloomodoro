@@ -1,6 +1,8 @@
 // Game rules for FocusFlow. Everything here is a pure function,
 // so it is easy to test and does not touch the DOM or localStorage.
 
+import { growGarden, type Plot } from "./garden";
+
 export type SessionResult = "completed" | "abandoned";
 
 export interface Session {
@@ -21,6 +23,8 @@ export interface GameState {
   lastDay: string | null; // last day with a completed session, "YYYY-MM-DD"
   daily: Record<string, number>; // focused minutes per day, for the charts
   sessions: Session[]; // newest first
+  coins: number; // earned from completed sessions, spent in the flower shop
+  garden: Plot[];
 }
 
 export interface ActiveSession {
@@ -45,6 +49,8 @@ export const INITIAL_STATE: GameState = {
   lastDay: null,
   daily: {},
   sessions: [],
+  coins: 0,
+  garden: [],
 };
 
 // ---------- Plant stages ----------
@@ -174,6 +180,9 @@ export function completeSession(state: GameState, active: ActiveSession) {
   else if (state.lastDay === previousDayKey(day)) streak = state.streak + 1;
   else streak = 1;
 
+  // Flowers in the garden grow by the minutes you just focused
+  const grown = growGarden(state.garden, active.minutes);
+
   const session: Session = {
     id: makeId(active.endsAt),
     label: active.label,
@@ -192,12 +201,15 @@ export function completeSession(state: GameState, active: ActiveSession) {
     lastDay: day,
     daily: { ...state.daily, [day]: (state.daily[day] ?? 0) + active.minutes },
     sessions: [session, ...state.sessions].slice(0, MAX_SAVED_SESSIONS),
+    coins: state.coins + gained,
+    garden: grown.garden,
   };
 
   return {
     state: next,
     gained,
     grew: stageIndex(next.xp) > stageIndex(state.xp),
+    bloomed: grown.bloomed,
   };
 }
 

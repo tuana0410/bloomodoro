@@ -66,3 +66,17 @@ export const LeafDot = ({ done }: { done: boolean }) => (
     <path d="M7 23 L19 11" stroke={done ? "#4f9a57" : "#c9c2b0"} strokeWidth="2.2" strokeLinecap="round" />
   </svg>
 );
+
+export const FlowerIcon = ({ size = 22 }: IconProps) => (
+  <svg {...base(size)}>
+    <circle cx="12" cy="8" r="2.2" />
+    <path d="M12 5.8c0-2.3 3.3-2.3 3.3 0M14.2 8c2.3 0 2.3 3.3 0 3.3M12 10.2c0 2.3-3.3 2.3-3.3 0M9.8 8c-2.3 0-2.3-3.3 0-3.3M12 10.5V21M12 17c-2.5 0-4-1.5-4.5-3.5 2.5 0 4 1.5 4.5 3.5ZM12 15c2.5 0 4-1.5 4.5-3.5-2.5 0-4 1.5-4.5 3.5Z" />
+  </svg>
+);
+
+export const CoinIcon = ({ size = 18 }: IconProps) => (
+  <svg {...base(size)} fill="#f7b538">
+    <circle cx="12" cy="12" r="8.5" />
+    <path d="M12 8v8M9.5 10.5h5" fill="none" />
+  </svg>
+);
