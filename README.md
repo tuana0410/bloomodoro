@@ -1,6 +1,6 @@
 # FocusFlow
 
-FocusFlow is a focus timer that works like a small game. Each session you finish gives you XP and grows a plant in a pot with a face; if you give up halfway, the plant gets sad.
+FocusFlow is a focus timer that works like a small game. Each session you finish gives you XP and coins and grows a plant in a pot with a face; if you give up halfway, the plant gets sad. Coins buy flowers for a garden that only grows while you focus.
 
 **Live demo:** https://focusflow-omega-teal.vercel.app
 
@@ -9,8 +9,6 @@ FocusFlow is a focus timer that works like a small game. Each session you finish
 ## The problem
 
 A plain timer makes it easy to put off a study session or stop it early. FocusFlow gives finishing a reward you can see and makes quitting cost a little.
-
-<!-- TODO: İstersen buraya bu uygulamayı neden yaptığını kendi cümlelerinle 1-2 cümle yaz -->
 
 ## How it works
 
