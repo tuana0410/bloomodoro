@@ -810,7 +810,7 @@ input[aria-invalid="true"] {
 .bottom-nav {
   z-index: 5;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 4px;
   margin-top: 22px;
   padding: 6px;
@@ -1019,3 +1019,68 @@ input[aria-invalid="true"] {
     margin: 0;
   }
 }
+
+/* ---------- Friends tab ---------- */
+.friends-tab .card + .card,
+.friends-tab .card + form,
+.friends-tab form + .card { margin-top: 14px; }
+
+.code-card { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.code-card .card-title { margin-bottom: 2px; }
+
+.friend-code {
+  padding: 10px 16px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  background: var(--yellow);
+  border: var(--line);
+  border-radius: 14px;
+  box-shadow: 3px 3px 0 var(--ink);
+  cursor: pointer;
+}
+
+.add-friend { display: grid; gap: 8px; }
+.add-row { display: flex; gap: 8px; }
+.add-row input { flex: 1; text-transform: uppercase; }
+.form-error { margin: 0; font-weight: 600; color: #b23a3a; }
+.form-ok { margin: 0; font-weight: 600; color: var(--teal-dark); }
+
+.btn.small { padding: 5px 12px; font-size: 0.85rem; box-shadow: 2px 2px 0 var(--ink); }
+.btn.plain { background: var(--cream); box-shadow: none; }
+.btn:disabled, .chip:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.leaderboard, .challenge-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.leaderboard li, .challenge-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.leaderboard .rank {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  font-weight: 800;
+  background: var(--mint);
+  border: var(--line);
+  border-radius: 50%;
+}
+.leaderboard li:first-child .rank { background: var(--yellow); }
+.leaderboard .who { flex: 1; display: grid; min-width: 120px; }
+.leaderboard .who small { display: flex; align-items: center; gap: 4px; color: var(--muted); }
+.row-actions { display: flex; gap: 6px; }
+
+.tag {
+  padding: 2px 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: var(--cream);
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+}
+.tag.completed { background: var(--mint); }
+.tag.declined, .tag.failed { background: var(--pink-soft); }

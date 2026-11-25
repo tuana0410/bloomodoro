@@ -1,0 +1,43 @@
+rules_version = '2';
+// Paste this into Firebase console → Firestore Database → Rules → Publish.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+
+    // Profiles: everyone signed in can read (friends see your name and stats), only you can write yours.
+    match /users/{uid} {
+      allow read: if signedIn();
+      allow create, update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.name is string && request.resource.data.name.size() <= 20;
+
+      // Friend lists: adding someone writes into both lists, so either side may create the link.
+      match /friends/{friendUid} {
+        allow read: if signedIn() && request.auth.uid == uid;
+        allow create, delete: if signedIn() && (request.auth.uid == uid || request.auth.uid == friendUid);
+      }
+    }
+
+    // One document per code: it can be created once and never changed, so codes stay unique.
+    match /codes/{code} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+    }
+
+    // Challenges: only between friends, only the challenged person moves them forward.
+    match /challenges/{id} {
+      allow read: if signedIn()
+        && (resource.data.from == request.auth.uid || resource.data.to == request.auth.uid);
+      allow create: if signedIn()
+        && request.resource.data.from == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.minutes is int
+        && request.resource.data.minutes >= 1 && request.resource.data.minutes <= 120
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid)/friends/$(request.resource.data.to));
+      allow update: if signedIn()
+        && resource.data.to == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updatedAt'])
+        && ((resource.data.status == 'pending' && request.resource.data.status in ['accepted', 'declined'])
+          || (resource.data.status == 'accepted' && request.resource.data.status in ['completed', 'failed']));
+    }
+  }
+}

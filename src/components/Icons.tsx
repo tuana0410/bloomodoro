@@ -80,3 +80,12 @@ export const CoinIcon = ({ size = 18 }: IconProps) => (
     <path d="M12 8v8M9.5 10.5h5" fill="none" />
   </svg>
 );
+
+export const FriendsIcon = ({ size = 22 }: IconProps) => (
+  <svg {...base(size)}>
+    <circle cx="9" cy="8.5" r="3.2" />
+    <path d="M3.5 19.5c.6-3.3 2.8-5 5.5-5s4.9 1.7 5.5 5" />
+    <circle cx="16.5" cy="9.5" r="2.6" />
+    <path d="M15.5 14.6c2.6-.3 4.6 1.2 5.1 4.4" />
+  </svg>
+);

@@ -32,6 +32,7 @@ export interface ActiveSession {
   minutes: number;
   startedAt: number;
   endsAt: number;
+  challengeId?: string; // set when this session answers a friend's challenge
 }
 
 export const DURATION_PRESETS = [15, 25, 50];

@@ -1,11 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { BottomNav, type Tab } from "./components/BottomNav";
 import { FocusTab } from "./components/FocusTab";
+import { FriendsTab } from "./components/FriendsTab";
 import { GardenTab } from "./components/GardenTab";
 import { CoinIcon, FlameIcon, StarIcon } from "./components/Icons";
 import { ProgressTab } from "./components/ProgressTab";
 import { SettingsTab } from "./components/SettingsTab";
 import { useNow } from "./hooks/useNow";
+import { useSocial } from "./hooks/useSocial";
+import type { Challenge } from "./lib/friends";
+import { publishStats, setChallengeStatus } from "./lib/social";
 import { playChime } from "./lib/chime";
 import { formatClock } from "./lib/format";
 import { buyFlower, digUp, findFlower } from "./lib/garden";
@@ -40,6 +44,8 @@ export default function App() {
   const [tab, setTab] = useState<Tab>("focus");
   const [notice, setNotice] = useState<Notice | null>(null);
   const now = useNow(active !== null);
+  const social = useSocial(settings.name);
+  const myUid = social.profile?.uid ?? null;
 
   // Remembers which session was already finished, so it is never counted twice
   const finishedRef = useRef<number | null>(null);
@@ -58,6 +64,8 @@ export default function App() {
     setGame(result.state);
     setActive(null);
     if (settings.sound) playChime();
+    const challengeDone = Boolean(active.challengeId && myUid);
+    if (active.challengeId && myUid) setChallengeStatus(myUid, active.challengeId, "completed").catch(() => {});
 
     const stageName = STAGES[stageProgress(result.state.xp).index].name;
     const bloomed = result.bloomed.map((f) => f.name.toLowerCase());
@@ -66,9 +74,19 @@ export default function App() {
       text:
         `Session done: +${result.gained} XP and +${result.gained} coins.` +
         (result.grew ? ` Your plant grew into a ${stageName.toLowerCase()}!` : "") +
-        (bloomed.length ? ` Now in bloom: ${[...new Set(bloomed)].join(", ")}.` : ""),
+        (bloomed.length ? ` Now in bloom: ${[...new Set(bloomed)].join(", ")}.` : "") +
+        (challengeDone ? " Challenge completed, your friend can see it!" : ""),
     });
-  }, [now, active, game, settings.sound]);
+  }, [now, active, game, settings.sound, myUid]);
+
+  // Share name, total minutes and streak with friends whenever they change
+  const totalMinutes = Object.values(game.daily).reduce((a, b) => a + b, 0);
+  const streakNow = visibleStreak(game, now);
+  const shownName = settings.name.trim();
+  useEffect(() => {
+    if (!myUid) return;
+    publishStats(myUid, { name: shownName || "Friend", totalMinutes, streak: streakNow }).catch(() => {});
+  }, [myUid, shownName, totalMinutes, streakNow]);
 
   // Show the countdown in the browser tab
   useEffect(() => {
@@ -84,9 +102,20 @@ export default function App() {
 
   function handleGiveUp() {
     if (!active) return;
+    if (active.challengeId && myUid) setChallengeStatus(myUid, active.challengeId, "failed").catch(() => {});
     setGame(abandonSession(game, active, Date.now()));
     setActive(null);
     setNotice({ kind: "warn", text: "Session stopped and your plant is sad. Finish the next one to cheer it up." });
+  }
+
+  function handleAcceptChallenge(c: Challenge) {
+    if (active) {
+      setNotice({ kind: "warn", text: "Finish your current session first, then start the challenge." });
+      return;
+    }
+    setNotice(null);
+    setActive({ ...startSession(`Challenge from ${c.fromName || "a friend"}`, c.minutes, Date.now()), challengeId: c.id });
+    setTab("focus");
   }
 
   function handleBuy(flowerId: string) {
@@ -157,6 +186,19 @@ export default function App() {
           )}
           {tab === "garden" && (
             <GardenTab coins={game.coins} garden={game.garden} onBuy={handleBuy} onDigUp={handleDigUp} />
+          )}
+          {tab === "friends" && (
+            <FriendsTab
+              status={social.status}
+              profile={social.profile}
+              friends={social.friends}
+              challenges={social.challenges}
+              now={now}
+              activeChallengeId={active?.challengeId ?? null}
+              busy={active !== null}
+              onAccept={handleAcceptChallenge}
+              onRetry={social.retry}
+            />
           )}
           {tab === "progress" && <ProgressTab game={game} now={now} />}
           {tab === "settings" && <SettingsTab settings={settings} onChange={setSettings} onReset={handleReset} />}
