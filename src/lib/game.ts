@@ -1,4 +1,4 @@
-// Game rules for FocusFlow. Everything here is a pure function,
+// Game rules for Bloomodoro. Everything here is a pure function,
 // so it is easy to test and does not touch the DOM or localStorage.
 
 import { growGarden, type Plot } from "./garden";

@@ -92,7 +92,7 @@ export function SettingsTab({ settings, onChange, onReset }: Props) {
       </section>
 
       <p className="about">
-        FocusFlow by <a href="https://tuana0410.github.io">Tuana Metdar</a>. Progress is saved only in this browser.
+        Bloomodoro by <a href="https://tuana0410.github.io">Tuana Metdar</a>. Progress is saved only in this browser.
       </p>
     </div>
   );

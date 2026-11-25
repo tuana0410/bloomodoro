@@ -1,6 +1,6 @@
-# FocusFlow
+# Bloomodoro
 
-FocusFlow is a focus timer that works like a small game. Each session you finish gives you XP and coins and grows a plant in a pot with a face; if you give up halfway, the plant gets sad. Coins buy flowers for a garden that only grows while you focus.
+Bloomodoro (bloom + pomodoro) is a focus timer that works like a small game. Each session you finish gives you XP and coins and grows a plant in a pot with a face; if you give up halfway, the plant gets sad. Coins buy flowers for a garden that only grows while you focus.
 
 **Live demo:** https://focusflow-omega-teal.vercel.app
 
@@ -8,7 +8,7 @@ FocusFlow is a focus timer that works like a small game. Each session you finish
 
 ## The problem
 
-A plain timer makes it easy to put off a study session or stop it early. FocusFlow gives finishing a reward you can see and makes quitting cost a little.
+A plain timer makes it easy to put off a study session or stop it early. Bloomodoro gives finishing a reward you can see and makes quitting cost a little.
 
 ## How it works
 

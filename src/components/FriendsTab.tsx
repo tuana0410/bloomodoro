@@ -45,7 +45,7 @@ export function FriendsTab({ status, profile, friends, challenges, now, activeCh
         <section className="card">
           <h3 className="card-title">Friends are not switched on yet</h3>
           <p className="muted">
-            This copy of FocusFlow has no Firebase keys. Add them as described in the README ("Friends setup") and
+            This copy of Bloomodoro has no Firebase keys. Add them as described in the README ("Friends setup") and
             this tab will give you a friend code.
           </p>
         </section>

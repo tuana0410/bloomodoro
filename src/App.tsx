@@ -91,8 +91,8 @@ export default function App() {
   // Show the countdown in the browser tab
   useEffect(() => {
     document.title = active
-      ? `${formatClock(Math.min(active.endsAt - now, active.endsAt - active.startedAt))} · FocusFlow`
-      : "FocusFlow";
+      ? `${formatClock(Math.min(active.endsAt - now, active.endsAt - active.startedAt))} · Bloomodoro`
+      : "Bloomodoro";
   }, [active, now]);
 
   function handleStart(label: string, minutes: number) {

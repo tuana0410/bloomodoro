@@ -11,6 +11,7 @@ import {
 } from "./game";
 import { GARDEN_SIZE, findFlower, type Plot } from "./garden";
 
+// Keys keep the old name so progress saved before the rename is not lost
 const STATE_KEY = "focusflow:v1";
 const ACTIVE_KEY = "focusflow:active:v1";
 const SETTINGS_KEY = "focusflow:settings:v1";
