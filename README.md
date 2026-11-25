@@ -2,7 +2,7 @@
 
 Bloomodoro (bloom + pomodoro) is a focus timer that works like a small game. Each session you finish gives you XP and coins and grows a plant in a pot with a face; if you give up halfway, the plant gets sad. Coins buy flowers for a garden that only grows while you focus.
 
-**Live demo:** https://focusflow-omega-teal.vercel.app
+**Live demo:** https://bloomodoro.vercel.app
 
 ![Focus screen with a running timer, and the progress screen with a weekly chart and activity map](docs/screenshot.png)
 
